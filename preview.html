@@ -1,0 +1,1410 @@
+<!DOCTYPE html>
+<html lang="en" class="scroll-smooth">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Tourex Himalayas | Himachal & Uttarakhand Tours & Travel Packages</title>
+  <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23C5A880' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'><circle cx='12' cy='12' r='10'/><polygon points='16.24 7.76 14.12 14.12 7.76 16.24 9.88 9.88 16.24 7.76'/></svg>" />
+  
+  <!-- Tailwind CSS CDN -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: {
+            brand: {
+              dark: '#0E1318',
+              charcoal: '#1A2129',
+              cream: '#F7F6F2',
+              sand: '#EBE7DE',
+              accent: '#2A363F',
+              gold: '#C5A880',
+              emerald: '#1F4E43',
+            }
+          },
+          fontFamily: {
+            sans: ['"Plus Jakarta Sans"', 'Inter', 'system-ui', 'sans-serif'],
+          }
+        }
+      }
+    }
+  </script>
+
+  <!-- Google Fonts: Plus Jakarta Sans -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+
+  <!-- Lucide Icons -->
+  <script src="https://unpkg.com/lucide@latest"></script>
+
+  <!-- React 18 & Babel Standalone -->
+  <script src="https://unpkg.com/react@18/umd/react.production.min.js" crossorigin></script>
+  <script src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js" crossorigin></script>
+  <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+
+  <style>
+    body {
+      font-family: 'Plus Jakarta Sans', sans-serif;
+    }
+    ::-webkit-scrollbar {
+      width: 8px;
+    }
+    ::-webkit-scrollbar-track {
+      background: #f1f1f1;
+    }
+    ::-webkit-scrollbar-thumb {
+      background: #cbd5e1;
+      border-radius: 9999px;
+    }
+    ::-webkit-scrollbar-thumb:hover {
+      background: #94a3b8;
+    }
+  </style>
+</head>
+<body class="bg-[#FBFBFA] text-neutral-900 selection:bg-neutral-900 selection:text-white antialiased">
+  <div id="root"></div>
+
+  <script type="text/babel">
+    const { useState, useEffect } = React;
+
+    // --- Lucide Icon Helper ---
+    function Icon({ name, className = "w-5 h-5", ...props }) {
+      useEffect(() => {
+        if (window.lucide) {
+          window.lucide.createIcons();
+        }
+      }, [name]);
+      return <i data-lucide={name} className={className} {...props}></i>;
+    }
+
+    // --- Supabase Backend Integration ---
+    const SUPABASE_CONFIG = {
+      url: "https://ektajyhffgndgnnogbtz.supabase.co",
+      key: "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImVrdGFqeWhmZmduZGdubm9nYnR6Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3OTUxMDczNTIsImV4cCI6MjExMDY4MzM1Mn0.7dD4b9xAtVBxpHZCqxYkQ_hOc2ahfN4vvvu0EiQuAv0"
+    };
+
+    async function supabaseInsert(table, payload) {
+      try {
+        const response = await fetch(`${SUPABASE_CONFIG.url}/rest/v1/${table}`, {
+          method: 'POST',
+          headers: {
+            'apikey': SUPABASE_CONFIG.key,
+            'Authorization': `Bearer ${SUPABASE_CONFIG.key}`,
+            'Content-Type': 'application/json',
+            'Prefer': 'return=representation'
+          },
+          body: JSON.stringify([payload])
+        });
+        return await response.json();
+      } catch (err) {
+        console.warn('Supabase offline or network error:', err);
+      }
+    }
+
+    // --- Business Details Data ---
+    const businessDetails = {
+      name: "Tourex Himalayas",
+      legalName: "Tourex Himalayan Expeditions Pvt. Ltd.",
+      tagline: "Let's find your next adventure across Himachal & Devbhoomi Uttarakhand",
+      description: "Premier Himalayan travel collective based in Himachal Pradesh. Handcrafted tours, alpine chalets, 4x4 high-altitude circuits, sacred pilgrimage yatras, and luxury road journeys for Indian travelers.",
+      location: "The Mall Road, Manali, Himachal Pradesh 175131, India",
+      tollFree: "1800-123-4462",
+      phone: "+91 77659 01013",
+      directPhone: "+91 77659 01013",
+      email: "bookings@tourexhimalayas.com",
+      whatsappNumber: "917765901013",
+      whatsappDisplay: "+91 77659 01013",
+      stats: {
+        satisfaction: "98%",
+        satisfactionLabel: "Customer Satisfaction",
+        satisfactionDesc: "Over 12,000+ happy Indian families, couples & trekkers",
+        destinations: "85+",
+        destinationsLabel: "Popular Destinations",
+        destinationsDesc: "Covering every hidden valley of Himachal & Uttarakhand",
+        guides: "240+",
+        guidesLabel: "Experienced Local Guides",
+        guidesDesc: "Native Pahadi experts, certified mountaineers & licensed drivers"
+      },
+      services: [
+        { id: "cabs", title: "Private Hill-Expert Cabs & Fleet", shortDesc: "Sanitized Toyota Innova Crysta, Ertiga, and 4x4 SUVs driven by seasoned mountain drivers.", badge: "Popular" },
+        { id: "chalets", title: "Alpine Wooden Chalets & Stays", shortDesc: "Handpicked cedar-wood cottages, riverside camps, and heritage boutique resorts with peak views.", badge: "Signature" },
+        { id: "pilgrimage", title: "Devbhoomi Pilgrimage & Char Dham", shortDesc: "Vetted Kedarnath, Badrinath, Gangotri & Yamunotri yatras with VIP Darshan & helicopter support.", badge: "Spiritual" },
+        { id: "treks", title: "Guided High-Altitude Treks", shortDesc: "Spiti, Triund, Kheerganga, Chopta-Chandrashila & Valley of Flowers with certified leaders.", badge: "Certified" },
+        { id: "volvo", title: "Delhi/Chandigarh Volvo Transfers", shortDesc: "Overnight luxury AC multi-axle sleeper buses connecting Delhi & Chandigarh directly to hills.", badge: "Convenient" },
+        { id: "concierge", title: "24/7 Pahadi On-Ground Concierge", shortDesc: "All-weather road advisories, Rohtang & border permits, medical emergency kits, and oxygen.", badge: "Safety First" }
+      ]
+    };
+
+    // --- Destinations Data (Himachal Pradesh & Uttarakhand) ---
+    const destinationsData = [
+      // Himachal Pradesh
+      {
+        id: "manali-solang-atal-tunnel",
+        title: "Manali, Solang Valley & Atal Tunnel Adventure",
+        location: "Manali & Kullu, Himachal Pradesh",
+        state: "Himachal Pradesh",
+        category: "Snow & Mountains",
+        price: 14999,
+        duration: "5 Days / 4 Nights",
+        rating: 4.96,
+        reviewsCount: 384,
+        image: "https://images.unsplash.com/photo-1626621341517-bbf3d9990a23?auto=format&fit=crop&w=1200&q=80",
+        badge: "Bestseller",
+        overview: "Experience snow adventures at Solang Valley, cross the engineering wonder Atal Tunnel to Sissu's frozen waterfalls, explore Old Manali's cafes, and visit sacred Hadimba Temple.",
+        highlights: [
+          "Drive through Atal Tunnel (9.02 KM) into snowy Sissu Valley",
+          "Snow paragliding, zorbing, and cable car ride at Solang Valley",
+          "Stay in luxury cedar-wood chalet with private mountain view balcony",
+          "Hadimba Devi Temple, Vashisht Sulphur Springs & Jogini Waterfall hike"
+        ],
+        itinerary: [
+          { day: "Day 1", title: "Arrival in Manali & Old Manali Cafes", desc: "Pickup from Delhi/Chandigarh via luxury Volvo or private cab. Check-in at alpine chalet. Afternoon stroll through Old Manali and Hadimba Temple." },
+          { day: "Day 2", title: "Solang Valley Adventures & Sissu (Lahaul)", desc: "Drive through Atal Tunnel to snowy Sissu. Return to Solang Valley for paragliding, quad biking, and ropeway." },
+          { day: "Day 3", title: "Rohtang Pass Excursion (Optional / Permit)", desc: "Excursion towards snow-covered Rohtang Pass (13,058 ft). Snow scooter rides. Evening shopping on Mall Road." },
+          { day: "Day 4", title: "Naggar Castle & Vashisht Hot Springs", desc: "Visit historic Naggar Castle and Roerich art gallery. Hot sulphur springs dip at Vashisht and hike to Jogini Waterfall." },
+          { day: "Day 5", title: "Kullu River Rafting & Departure", desc: "White water river rafting in Beas River at Kullu, visit Vaishno Devi temple, and return transfer." }
+        ],
+        included: ["4 Nights in 4-Star Mountain Chalet with Breakfast & Dinner", "Private AC Sedan/Innova for local sightseeing", "Atal Tunnel & Sissu Green Tax", "Native Pahadi driver & guide"]
+      },
+      {
+        id: "spiti-valley-chandratal",
+        title: "Spiti Valley High-Altitude 4x4 Circuit & Chandratal",
+        location: "Kaza, Spiti Valley, Himachal Pradesh",
+        state: "Himachal Pradesh",
+        category: "High-Altitude Treks",
+        price: 24500,
+        duration: "8 Days / 7 Nights",
+        rating: 4.98,
+        reviewsCount: 220,
+        image: "https://images.unsplash.com/photo-1588668214407-6ea9a6d8c272?auto=format&fit=crop&w=1200&q=80",
+        badge: "Bucket List",
+        overview: "The ultimate cold desert expedition. Thousand-year-old Key Monastery perched on cliffs, Hikkim (world's highest post office), Chicham Bridge, and camping under the stars at Chandratal Lake.",
+        highlights: [
+          "Camp beside the crystal blue crescent of Chandratal Lake",
+          "Visit 1,000-year-old UNESCO Tabo Monastery & Key Gompa",
+          "Send postcards from Hikkim (14,567 ft) - Highest Post Office",
+          "Cross dizzying Chicham Bridge at 13,596 ft"
+        ],
+        itinerary: [
+          { day: "Day 1", title: "Shimla to Sangla Valley", desc: "Gateway to Kinnaur past apple orchards. Stay beside Baspa River." },
+          { day: "Day 2", title: "Chitkul to Kalpa", desc: "Visit Chitkul (last Indian village). Sunset view of sacred Kinner Kailash." },
+          { day: "Day 3", title: "Kalpa to Nako & Tabo", desc: "Enter Spiti desert terrain. Visit Nako lake and 1000-year-old Tabo Monastery." },
+          { day: "Day 4", title: "Dhankar to Kaza", desc: "Cliff-hanging Dhankar Monastery and drive to Kaza." },
+          { day: "Day 5", title: "Highest Villages (Hikkim, Komic, Langza)", desc: "World's highest post office and golden Buddha statue." },
+          { day: "Day 6", title: "Key Gompa & Chicham Bridge", desc: "Tea with Buddhist monks at Key Gompa and cross Chicham suspension bridge." },
+          { day: "Day 7", title: "Kunzum Pass to Chandratal Lake", desc: "Ascend Kunzum Pass (14,931 ft). Camp under Milky Way at Chandratal." },
+          { day: "Day 8", title: "Chandratal to Atal Tunnel & Manali Drop", desc: "Off-road drive crossing Batal and Atal Tunnel to Manali drop." }
+        ],
+        included: ["7 Nights boutique homestays and Swiss alpine tents", "4x4 Mahindra Scorpio/Innova with expert driver", "All meals, inner-line permits, and portable oxygen"]
+      },
+      {
+        id: "kasol-tosh-kheerganga",
+        title: "Kasol, Tosh & Kheerganga Hot Springs Trek",
+        location: "Parvati Valley, Himachal Pradesh",
+        state: "Himachal Pradesh",
+        category: "Treks & Adventure",
+        price: 10999,
+        duration: "4 Days / 3 Nights",
+        rating: 4.93,
+        reviewsCount: 310,
+        image: "https://images.unsplash.com/photo-1544735716-392fe2489ffa?auto=format&fit=crop&w=1200&q=80",
+        badge: "Youth Favorite",
+        overview: "Bohemian riverside cafes in Kasol, quiet wooden houses of Tosh overlooking snow peaks, and a rewarding hike to the natural hot sulphur springs of Kheerganga.",
+        highlights: [
+          "Dip in natural hot sulphur springs surrounded by snow peaks",
+          "Riverside cafe hopping in Kasol (Israeli & Tibetan delicacies)",
+          "Overnight campfire and dome tent camping at Kheerganga",
+          "Darshan at holy Manikaran Sahib Gurudwara"
+        ],
+        itinerary: [
+          { day: "Day 1", title: "Arrival in Kasol & Chalal Stroll", desc: "Check-in at riverside camp. Stroll across suspension bridge to Chalal." },
+          { day: "Day 2", title: "Tosh Village Stay", desc: "Drive to Barshaini and hike to Tosh. Traditional Himachali homestay." },
+          { day: "Day 3", title: "Trek to Kheerganga (12 KM)", desc: "Trek through pine woods and waterfalls. Soak in hot sulphur springs at top." },
+          { day: "Day 4", title: "Descent & Manikaran Sahib", desc: "Trek down to Barshaini. Visit holy Manikaran Gurudwara and return." }
+        ],
+        included: ["Delhi-Kasol round-trip AC Volvo", "3 Nights accommodation (Camp, homestay, dome tent)", "All meals, trek guide & campfire"]
+      },
+      {
+        id: "shimla-kufri-narkanda",
+        title: "Shimla, Kufri & Narkanda Heritage Circuit",
+        location: "Shimla, Himachal Pradesh",
+        state: "Himachal Pradesh",
+        category: "Honeymoon & Leisure",
+        price: 12800,
+        duration: "4 Days / 3 Nights",
+        rating: 4.89,
+        reviewsCount: 425,
+        image: "https://images.unsplash.com/photo-1562016600-ece13e8ba570?auto=format&fit=crop&w=1200&q=80",
+        badge: "Family Classic",
+        overview: "Relive British colonial nostalgia on Mall Road and The Ridge. Ride the UNESCO Toy Train, enjoy horse rides at Kufri, and explore dense apple orchards in Narkanda.",
+        highlights: [
+          "UNESCO Kalka-Shimla Toy Train mountain ride experience",
+          "Jakhoo Hill ropeway & 108-ft Lord Hanuman statue",
+          "Fun activities and yak rides at Kufri Fun World",
+          "Excursion to Narkanda & Hatu Peak (11,152 ft)"
+        ],
+        itinerary: [
+          { day: "Day 1", title: "Arrival & The Ridge Walk", desc: "Check-in at colonial hotel. Evening stroll on The Ridge and Christ Church." },
+          { day: "Day 2", title: "Kufri Adventure & Jakhoo Ropeway", desc: "Day tour to Kufri snow park and ride ropeway to Jakhoo temple." },
+          { day: "Day 3", title: "Narkanda & Hatu Peak", desc: "Excursion to Hatu Peak with 360-degree Himalayan views." },
+          { day: "Day 4", title: "Viceregal Lodge & Departure", desc: "Visit British Viceregal Lodge gardens and departure." }
+        ],
+        included: ["3 Nights in 4-Star colonial hotel", "Private AC car for 4 days", "Breakfast and dinner", "Toll & parking"]
+      },
+      {
+        id: "jibhi-tirthan-jalori-pass",
+        title: "Jibhi, Jalori Pass & Serolsar Lake (Tirthan Valley)",
+        location: "Tirthan & Banjar Valley, Himachal Pradesh",
+        state: "Himachal Pradesh",
+        category: "Offbeat & Nature",
+        price: 15200,
+        duration: "4 Days / 3 Nights",
+        rating: 4.97,
+        reviewsCount: 195,
+        image: "https://images.unsplash.com/photo-1506744038136-46273834b3fb?auto=format&fit=crop&w=1200&q=80",
+        badge: "Hidden Gem",
+        overview: "Stay in handcrafted wooden treehouse cottages, enjoy trout angling in pristine rivers, and hike across Jalori Pass (10,800 ft) to mystical Serolsar Lake.",
+        highlights: [
+          "Stay in authentic wooden treehouse cottage perched in pine forest",
+          "Trek from Jalori Pass to sacred Serolsar Lake",
+          "Hidden Jibhi Waterfall and Chehni Kothi 1,500-year-old tower",
+          "Riverside relaxation by crystal trout streams of Tirthan"
+        ],
+        itinerary: [
+          { day: "Day 1", title: "Arrival in Jibhi", desc: "Check-in to wooden treehouse cottage. Evening bonfire." },
+          { day: "Day 2", title: "Jalori Pass & Serolsar Lake Trek", desc: "Ascend to Jalori Pass (10,800 ft) and trek to Serolsar Lake." },
+          { day: "Day 3", title: "Chehni Kothi & Jibhi Waterfalls", desc: "Hike to Chehni Kothi wooden castle tower and Jibhi waterfall." },
+          { day: "Day 4", title: "Tirthan Riverfront & Departure", desc: "Morning riverside stroll and return transfer." }
+        ],
+        included: ["3 Nights in premium wooden chalet/treehouse", "Breakfast and traditional Pahadi dinners", "Dedicated vehicle & local guide"]
+      },
+      // Uttarakhand (Devbhoomi)
+      {
+        id: "rishikesh-haridwar-adventure",
+        title: "Rishikesh & Haridwar (Ganga Aarti & River Rafting)",
+        location: "Rishikesh & Haridwar, Uttarakhand",
+        state: "Uttarakhand",
+        category: "Treks & Adventure",
+        price: 8999,
+        duration: "3 Days / 2 Nights",
+        rating: 4.95,
+        reviewsCount: 540,
+        image: "https://images.unsplash.com/photo-1544735716-392fe2489ffa?auto=format&fit=crop&w=1200&q=80",
+        badge: "Top Rated",
+        overview: "Adrenaline-filled 16 KM white water rafting on emerald Ganga, cliff jumping, luxury riverside glamping with swimming pool, and divine evening Ganga Aarti at Triveni Ghat.",
+        highlights: [
+          "16 KM White Water Rafting with cliff jumping from 25-ft rock",
+          "Divine evening Ganga Aarti with floating lamps at Triveni Ghat",
+          "Luxury AC swiss glamping resort with swimming pool & bonfire",
+          "Visit Ram Jhula, Laxman Jhula, and the historic Beatles Ashram"
+        ],
+        itinerary: [
+          { day: "Day 1", title: "Arrival in Rishikesh & Ganga Aarti", desc: "Check-in at riverside camp. Evening Ganga Aarti at Triveni Ghat." },
+          { day: "Day 2", title: "16 KM Rafting & Beatles Ashram", desc: "White water river rafting from Shivpuri. Cliff jumping. Visit Beatles Ashram." },
+          { day: "Day 3", title: "Sunrise Yoga, Haridwar & Departure", desc: "Beach yoga session. Visit Har Ki Pauri in Haridwar and return." }
+        ],
+        included: ["2 Nights in Luxury Swiss Glamping Camp", "All meals & evening BBQ snacks", "16 KM Rafting with certified instructors", "Private AC transfers"]
+      },
+      {
+        id: "kedarnath-badrinath-do-dham",
+        title: "Kedarnath & Badrinath (Sacred Do Dham Pilgrimage)",
+        location: "Rudraprayag & Chamoli, Uttarakhand",
+        state: "Uttarakhand",
+        category: "Spiritual & Char Dham",
+        price: 27500,
+        duration: "6 Days / 5 Nights",
+        rating: 4.99,
+        reviewsCount: 680,
+        image: "https://images.unsplash.com/photo-1596401057633-54a8fe8ef647?auto=format&fit=crop&w=1200&q=80",
+        badge: "Divine Moksha Yatra",
+        overview: "Sacred pilgrimage to Lord Kedarnath Jyotirlinga at 11,755 ft and colorful Badrinath Temple. Includes helicopter slot assistance, verified medical checks, and VIP Darshan coordination.",
+        highlights: [
+          "Darshan at sacred Kedarnath Jyotirlinga and evening Maha Aarti",
+          "Holy bath at Tapt Kund & Darshan at Badrinath Temple",
+          "Visit Mana Village (Last Indian Village), Vyas Gufa & Bhim Pul",
+          "Witness sacred Panch Prayag river confluences"
+        ],
+        itinerary: [
+          { day: "Day 1", title: "Haridwar/Rishikesh to Guptkashi", desc: "Drive along holy river passing Devprayag Sangam. Stay in Guptkashi." },
+          { day: "Day 2", title: "Guptkashi to Kedarnath (Helicopter / Trek)", desc: "Trek or helicopter to Kedarnath. Evening temple Aarti in Himalayas." },
+          { day: "Day 3", title: "Kedarnath Darshan & Return to Guptkashi", desc: "Morning Abhishek Darshan. Trek/fly down to Guptkashi." },
+          { day: "Day 4", title: "Guptkashi to Badrinath", desc: "Drive along Alaknanda River to Badrinath. Evening Darshan." },
+          { day: "Day 5", title: "Badrinath, Mana Village to Rudraprayag", desc: "Explore Mana Village and drive to Rudraprayag." },
+          { day: "Day 6", title: "Rudraprayag to Haridwar / Dehradun Drop", desc: "Visit Dhari Devi temple and return drop." }
+        ],
+        included: ["5 Nights verified hotel & Kedarnath accommodation", "Dedicated commercial AC hill vehicle", "Pure vegetarian meals", "Yatra biometric registration assistance"]
+      },
+      {
+        id: "nainital-bhimtal-mukteshwar",
+        title: "Nainital, Bhimtal & Mukteshwar (Kumaon Lake Tour)",
+        location: "Nainital & Mukteshwar, Uttarakhand",
+        state: "Uttarakhand",
+        category: "Honeymoon & Leisure",
+        price: 12999,
+        duration: "4 Days / 3 Nights",
+        rating: 4.91,
+        reviewsCount: 340,
+        image: "https://images.unsplash.com/photo-1506744038136-46273834b3fb?auto=format&fit=crop&w=1200&q=80",
+        badge: "Family Favorite",
+        overview: "Romantic yacht boating on eye-shaped Naini Lake, ropeway to Snow View Point, tranquil sister lakes of Bhimtal and Sattal, and 180-degree Himalayan views from Mukteshwar.",
+        highlights: [
+          "Yacht sailing and pedal boating on emerald Naini Lake",
+          "Aerial cable car ride to Snow View Point with Nanda Devi views",
+          "Island cafe in Bhimtal & water activities in Naukuchiatal",
+          "180-degree Himalayan panorama from Mukteshwar Dham cliff"
+        ],
+        itinerary: [
+          { day: "Day 1", title: "Arrival in Nainital & Mall Road", desc: "Check-in at lake-view resort. Evening boating on Naini Lake." },
+          { day: "Day 2", title: "Nainital Local & Snow View Ropeway", desc: "Ropeway to Snow View Point, Cave Garden, and Naina Devi temple." },
+          { day: "Day 3", title: "Lakes Tour (Bhimtal, Sattal, Naukuchiatal)", desc: "Excursion to Bhimtal island, Sattal pine trails, and Naukuchiatal." },
+          { day: "Day 4", title: "Mukteshwar & Departure", desc: "Drive to Mukteshwar, visit Chauli Ki Jali, and departure." }
+        ],
+        included: ["3 Nights in 4-Star lake/valley view resort", "Private AC car for all sightseeing", "Daily breakfast & dinner", "1 Complimentary boating session"]
+      },
+      {
+        id: "auli-joshimath-skiing",
+        title: "Auli & Joshimath (India's Premier Skiing Wonderland)",
+        location: "Chamoli, Uttarakhand",
+        state: "Uttarakhand",
+        category: "Snow & Mountains",
+        price: 18999,
+        duration: "5 Days / 4 Nights",
+        rating: 4.96,
+        reviewsCount: 210,
+        image: "https://images.unsplash.com/photo-1542314831-068cd1dbfeeb?auto=format&fit=crop&w=1200&q=80",
+        badge: "Skiing Paradise",
+        overview: "Soar on the 4 KM Auli Ropeway cable car high above pine trees. Experience skiing and snowboarding on powdery slopes with 360-degree unobstructed views of Mt. Nanda Devi (7,816 m).",
+        highlights: [
+          "Ride the famous 4 KM long Auli Ropeway cable car",
+          "Skiing lessons on powdery slopes with certified instructors",
+          "Unobstructed 360-degree views of Mt. Nanda Devi & Trishul",
+          "Snow trek to Gorson Bugyal meadow (10,000 ft)"
+        ],
+        itinerary: [
+          { day: "Day 1", title: "Rishikesh to Joshimath", desc: "Scenic hill ascent past Devprayag. Arrive in Joshimath." },
+          { day: "Day 2", title: "Auli Ropeway & Skiing Slopes", desc: "Take ropeway up to Auli. Check-in at ski resort. Beginner skiing lessons." },
+          { day: "Day 3", title: "Gorson Bugyal Snow Trek", desc: "Trek to Gorson alpine meadows with close-up views of Nanda Devi." },
+          { day: "Day 4", title: "Auli Artificial Lake & Joshimath", desc: "Visit high-altitude lake. Shankaracharya Math in Joshimath." },
+          { day: "Day 5", title: "Joshimath to Rishikesh Drop", desc: "Scenic descent along Alaknanda River to Rishikesh." }
+        ],
+        included: ["4 Nights stay (Joshimath + Auli Ski Resort)", "Dedicated vehicle", "Meals & 1-day skiing equipment with instructor"]
+      },
+      {
+        id: "chopta-tungnath-chandrashila",
+        title: "Chopta, Tungnath & Chandrashila Peak Trek",
+        location: "Rudraprayag, Uttarakhand",
+        state: "Uttarakhand",
+        category: "High-Altitude Treks",
+        price: 14200,
+        duration: "4 Days / 3 Nights",
+        rating: 4.97,
+        reviewsCount: 245,
+        image: "https://images.unsplash.com/photo-1518780664697-55e3ad937233?auto=format&fit=crop&w=1200&q=80",
+        badge: "Mini Switzerland of UK",
+        overview: "Trek to the highest Shiva temple in the world - Tungnath (12,073 ft) and summit Chandrashila Peak (13,123 ft) for panoramic sunrise views over Chaukhamba and Kedarnath peaks.",
+        highlights: [
+          "Trek to 1,000-year-old Tungnath Temple (highest Shiva temple on Earth)",
+          "360-degree Himalayan sunrise from Chandrashila Peak (13,123 ft)",
+          "Camp beside reflective waters of Deoriatal Lake",
+          "Walk through lush green alpine meadows (Bugyals) of Chopta"
+        ],
+        itinerary: [
+          { day: "Day 1", title: "Rishikesh to Sari & Deoriatal", desc: "Drive to Sari village. Hike to Deoriatal Lake camp with Chaukhamba reflection." },
+          { day: "Day 2", title: "Deoriatal to Chopta Meadow", desc: "Drive to Chopta ('Mini Switzerland'). Check-in at luxury Swiss tents." },
+          { day: "Day 3", title: "Tungnath & Chandrashila Summit", desc: "Ascent to Tungnath Temple and Chandrashila Peak. Stunning 360-degree views." },
+          { day: "Day 4", title: "Chopta to Rishikesh Return", desc: "Descent along Mandakini River back to Rishikesh." }
+        ],
+        included: ["3 Nights stay (Deoriatal camp + Chopta Swiss tents)", "All trek meals, certified leader, and private transport"]
+      }
+    ];
+
+    // --- Reviews Data ---
+    const reviewsData = [
+      {
+        name: "Aman & Neha Sharma",
+        role: "Honeymooners from New Delhi",
+        date: "February 2026",
+        rating: 5,
+        avatar: "https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=200&q=80",
+        comment: "Our Manali & Atal Tunnel luxury chalet tour was beyond magical! From the doorstep Innova pickup in Delhi to the private snow excursions in Sissu and candlelit chalet dinners, Tourex Himalayas handled every detail with 5-star perfection. Worth every single rupee!"
+      },
+      {
+        name: "Dr. Rajesh & Shobha Kulkarni",
+        role: "Family Travelers from Pune, Maharashtra",
+        date: "January 2026",
+        rating: 5,
+        avatar: "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?auto=format&fit=crop&w=200&q=80",
+        comment: "Undertaking the Kedarnath & Badrinath Do Dham Yatra with elderly parents was a big concern for us, but the Tourex team made it completely seamless. Clean sanitized hill cabs, caring native Pahadi guides who treated our parents like family. Truly Devbhoomi blessings!"
+      },
+      {
+        name: "Karan Singhania & Friends",
+        role: "Adventure Group from Bengaluru",
+        date: "February 2026",
+        rating: 5,
+        avatar: "https://images.unsplash.com/photo-1500648767791-00dcc994a43e?auto=format&fit=crop&w=200&q=80",
+        comment: "The 8-Day Spiti Valley 4x4 circuit with Tourex was the best road trip of our lives. Tenzin, our driver and guide, is an absolute master on mountain curves. Camping at Chandratal under the Milky Way with portable oxygen in the vehicle gave us immense peace of mind."
+      }
+    ];
+
+    // --- MAIN REACT APPLICATION COMPONENT ---
+    function App() {
+      const [currency, setCurrency] = useState({ code: 'INR', symbol: '₹', rate: 1 });
+      const [activeTourModal, setActiveTourModal] = useState(null);
+      const [signInOpen, setSignInOpen] = useState(false);
+      const [toast, setToast] = useState(null);
+      const [reviewIndex, setReviewIndex] = useState(0);
+
+      // Hero states
+      const [heroTab, setHeroTab] = useState('tour');
+      const [selectedHeroDest, setSelectedHeroDest] = useState(destinationsData[0].title);
+      const [checkInDate, setCheckInDate] = useState('2026-03-15');
+      const [checkOutDate, setCheckOutDate] = useState('2026-03-20');
+      const [guestCount, setGuestCount] = useState(2);
+      const [heroPickup, setHeroPickup] = useState('Delhi NCR (Airport / Railway Station)');
+
+      // Destination filters
+      const [filterState, setFilterState] = useState('All');
+      const [filterCat, setFilterCat] = useState('All');
+      const [searchQuery, setSearchQuery] = useState('');
+      const [favorites, setFavorites] = useState({});
+
+      const showToast = (msg) => {
+        setToast(msg);
+        setTimeout(() => setToast(null), 5000);
+      };
+
+      const handleHeroReserve = (e) => {
+        e.preventDefault();
+        const dest = destinationsData.find(d => d.title === selectedHeroDest) || destinationsData[0];
+        setActiveTourModal({
+          ...dest,
+          customCheckIn: checkInDate,
+          customCheckOut: checkOutDate,
+          customGuests: guestCount,
+          customPickup: heroPickup
+        });
+      };
+
+      const filteredList = destinationsData.filter(d => {
+        const matchesState = filterState === 'All' || d.state === filterState;
+        const matchesCat = filterCat === 'All' || d.category === filterCat;
+        const q = searchQuery.toLowerCase();
+        const matchesSearch = d.title.toLowerCase().includes(q) || d.location.toLowerCase().includes(q) || d.overview.toLowerCase().includes(q);
+        return matchesState && matchesCat && matchesSearch;
+      });
+
+      return (
+        <div className="min-h-screen bg-[#FBFBFA] text-neutral-900 selection:bg-neutral-900 selection:text-white">
+          
+          {/* Toast */}
+          {toast && (
+            <div className="fixed top-20 right-4 sm:right-8 z-50 max-w-md bg-neutral-950 text-white px-5 py-3.5 rounded-2xl shadow-2xl border border-white/20 flex items-center gap-3 animate-in fade-in slide-in-from-top-4 duration-300">
+              <span className="w-2.5 h-2.5 rounded-full bg-emerald-400"></span>
+              <span className="text-xs font-semibold">{toast}</span>
+            </div>
+          )}
+
+          {/* NAVBAR */}
+          <header className="fixed top-0 left-0 right-0 z-40 bg-[#0E1318]/95 backdrop-blur-md py-3.5 border-b border-white/10">
+            <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex items-center justify-between">
+              
+              {/* Logo */}
+              <a href="#" className="flex items-center gap-2.5">
+                <div className="w-9 h-9 rounded-full bg-white/10 border border-white/20 flex items-center justify-center text-amber-400">
+                  <Icon name="compass" className="w-5 h-5" />
+                </div>
+                <div className="flex flex-col">
+                  <span className="text-xl sm:text-2xl font-extrabold tracking-tight text-white flex items-center">
+                    tourex
+                    <span className="w-1.5 h-1.5 rounded-full bg-amber-400 ml-1"></span>
+                    <span className="text-[10px] tracking-widest uppercase font-semibold text-amber-300 ml-2 px-1.5 py-0.5 rounded bg-white/10 hidden sm:inline">
+                      Himalayas
+                    </span>
+                  </span>
+                  <span className="text-[9px] uppercase tracking-wider text-white/60 -mt-1 hidden sm:block">
+                    Himachal & Uttarakhand
+                  </span>
+                </div>
+              </a>
+
+              {/* Nav links */}
+              <nav className="hidden md:flex items-center space-x-7 text-sm font-semibold text-white/90">
+                <a href="#hero" className="hover:text-amber-400 transition-colors">Home</a>
+                <a href="#destinations" className="hover:text-amber-400 transition-colors">Tour Packages</a>
+                <a href="#about" className="hover:text-amber-400 transition-colors">About Us</a>
+                <a href="#services" className="hover:text-amber-400 transition-colors">Services</a>
+                <a href="#contact" className="hover:text-amber-400 transition-colors">Contact</a>
+              </nav>
+
+              {/* Right CTA */}
+              <div className="flex items-center gap-3">
+                <a 
+                  href={`https://wa.me/${businessDetails.whatsappNumber}`}
+                  target="_blank"
+                  className="hidden sm:flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-emerald-600/90 hover:bg-emerald-600 text-white text-xs font-bold transition-all shadow-sm"
+                >
+                  <Icon name="phone" className="w-3.5 h-3.5" />
+                  <span>{businessDetails.whatsappDisplay}</span>
+                </a>
+
+                <button 
+                  onClick={() => setSignInOpen(true)}
+                  className="px-5 py-2 rounded-full border border-white/40 text-white text-xs sm:text-sm font-semibold hover:bg-white hover:text-neutral-950 transition-all shadow-sm"
+                >
+                  Sign In
+                </button>
+              </div>
+
+            </div>
+          </header>
+
+          {/* HERO SECTION (Matches Reference Image) */}
+          <section id="hero" className="relative min-h-[95vh] lg:min-h-screen flex items-center justify-center pt-28 pb-16 overflow-hidden">
+            <div className="absolute inset-0 z-0">
+              <img 
+                src="https://images.unsplash.com/photo-1542314831-068cd1dbfeeb?auto=format&fit=crop&w=2000&q=85" 
+                alt="Scenic Himalayan Mountain Chalet at Dusk" 
+                className="w-full h-full object-cover object-center transform scale-105"
+              />
+              <div className="absolute inset-0 bg-gradient-to-r from-black/85 via-black/55 to-black/75"></div>
+              <div className="absolute inset-0 bg-gradient-to-t from-[#0E1318] via-transparent to-black/60"></div>
+            </div>
+
+            <div className="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 w-full">
+              <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 items-center">
+                
+                {/* Left Column: Big Display Headline & CTA matching Reference */}
+                <div className="lg:col-span-7 text-white space-y-6">
+                  <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-white/10 backdrop-blur-md border border-white/20 text-xs font-semibold tracking-wide uppercase text-amber-300">
+                    <span className="w-2 h-2 rounded-full bg-amber-400 animate-pulse"></span>
+                    Himachal & Uttarakhand Special Expeditions
+                  </div>
+
+                  <h1 className="text-4xl sm:text-6xl xl:text-7xl font-bold tracking-tight leading-[1.08] text-white">
+                    Let's find your <br />
+                    <span>next adventure</span>
+                  </h1>
+
+                  <p className="max-w-xl text-base sm:text-lg text-white/80 font-normal leading-relaxed">
+                    Handcrafted journeys across snow-clad Himachal Pradesh & sacred Devbhoomi Uttarakhand. Discover hidden pine valleys, high-altitude desert circuits, ancient temples, and luxury alpine chalets with native Pahadi guides.
+                  </p>
+
+                  <div className="pt-2 flex flex-wrap items-center gap-4">
+                    <a 
+                      href="#destinations" 
+                      className="group inline-flex items-center justify-between pl-6 pr-2 py-2 rounded-full bg-white text-neutral-900 font-bold text-sm sm:text-base hover:bg-neutral-100 transition-all duration-300 shadow-xl hover:scale-105"
+                    >
+                      <span>Take a tour</span>
+                      <span className="w-9 h-9 ml-4 rounded-full bg-neutral-900 flex items-center justify-center text-white group-hover:bg-amber-500 transition-colors">
+                        <Icon name="arrow-up-right" className="w-4 h-4 text-white" />
+                      </span>
+                    </a>
+
+                    <a 
+                      href="#about"
+                      className="inline-flex items-center gap-2 px-6 py-3 rounded-full bg-white/10 hover:bg-white/20 backdrop-blur-md border border-white/20 text-white text-sm font-semibold transition-colors"
+                    >
+                      <span>Why Travel With Us?</span>
+                    </a>
+                  </div>
+
+                  <div className="pt-8 hidden sm:flex items-center gap-3">
+                    <div className="w-16 h-1 rounded-full bg-amber-400"></div>
+                    <div className="w-8 h-1 rounded-full bg-white/30"></div>
+                    <div className="w-8 h-1 rounded-full bg-white/30"></div>
+                    <span className="text-xs text-white/70 pl-2">16 Curated Mountain Expeditions</span>
+                  </div>
+                </div>
+
+                {/* Right Column: Floating Reservation Card (Verbatim from Reference Image) */}
+                <div className="lg:col-span-5 flex justify-center lg:justify-end">
+                  <div className="w-full max-w-md bg-white/95 backdrop-blur-xl rounded-3xl p-6 sm:p-7 shadow-2xl border border-white/40 text-neutral-800">
+                    
+                    {/* Tabs: Tour | Cab / Volvo | Hotels */}
+                    <div className="flex items-center justify-between border-b border-neutral-100 pb-4 mb-4">
+                      <button 
+                        onClick={() => setHeroTab('tour')}
+                        className={`flex items-center gap-2 px-3.5 py-1.5 rounded-full text-xs font-bold transition-all ${
+                          heroTab === 'tour' ? 'bg-neutral-900 text-white shadow-md' : 'text-neutral-500 hover:text-neutral-900'
+                        }`}
+                      >
+                        <Icon name="compass" className="w-3.5 h-3.5" />
+                        <span>Tour</span>
+                      </button>
+
+                      <button 
+                        onClick={() => setHeroTab('cab')}
+                        className={`flex items-center gap-2 px-3.5 py-1.5 rounded-full text-xs font-bold transition-all ${
+                          heroTab === 'cab' ? 'bg-neutral-900 text-white shadow-md' : 'text-neutral-500 hover:text-neutral-900'
+                        }`}
+                      >
+                        <Icon name="car" className="w-3.5 h-3.5" />
+                        <span>Cab / Volvo</span>
+                      </button>
+
+                      <button 
+                        onClick={() => setHeroTab('hotels')}
+                        className={`flex items-center gap-2 px-3.5 py-1.5 rounded-full text-xs font-bold transition-all ${
+                          heroTab === 'hotels' ? 'bg-neutral-900 text-white shadow-md' : 'text-neutral-500 hover:text-neutral-900'
+                        }`}
+                      >
+                        <Icon name="hotel" className="w-3.5 h-3.5" />
+                        <span>Hotels</span>
+                      </button>
+                    </div>
+
+                    <form onSubmit={handleHeroReserve} className="space-y-3">
+                      
+                      {/* Destination Dropdown */}
+                      <div className="border border-neutral-200 rounded-2xl p-3 bg-neutral-50/70">
+                        <span className="block text-[10px] font-bold text-neutral-400 uppercase tracking-wider mb-1">
+                          Destination (HP & UK)
+                        </span>
+                        <div className="flex items-center gap-2">
+                          <Icon name="map-pin" className="w-4 h-4 text-amber-600 flex-shrink-0" />
+                          <select
+                            value={selectedHeroDest}
+                            onChange={(e) => setSelectedHeroDest(e.target.value)}
+                            className="w-full bg-transparent text-xs sm:text-sm font-bold text-neutral-900 focus:outline-none cursor-pointer truncate"
+                          >
+                            <optgroup label="🏔️ Himachal Pradesh">
+                              {destinationsData.filter(d => d.state === 'Himachal Pradesh').map(d => (
+                                <option key={d.id} value={d.title}>{d.title} (₹{d.price.toLocaleString()})</option>
+                              ))}
+                            </optgroup>
+                            <optgroup label="🕉️ Uttarakhand (Devbhoomi)">
+                              {destinationsData.filter(d => d.state === 'Uttarakhand').map(d => (
+                                <option key={d.id} value={d.title}>{d.title} (₹{d.price.toLocaleString()})</option>
+                              ))}
+                            </optgroup>
+                          </select>
+                        </div>
+                      </div>
+
+                      {/* Pickup City */}
+                      <div className="border border-neutral-200 rounded-2xl p-2.5 bg-neutral-50/70">
+                        <span className="block text-[10px] font-bold text-neutral-400 uppercase tracking-wider mb-1">
+                          Pickup Location
+                        </span>
+                        <select
+                          value={heroPickup}
+                          onChange={(e) => setHeroPickup(e.target.value)}
+                          className="w-full bg-transparent text-xs font-semibold text-neutral-800 focus:outline-none cursor-pointer"
+                        >
+                          <option value="Delhi NCR (Airport / Railway Station)">Delhi NCR (Airport / Railway Station)</option>
+                          <option value="Chandigarh (Airport / Sector 43 ISBT)">Chandigarh (Airport / ISBT 43)</option>
+                          <option value="Dehradun Airport / Railway Station">Dehradun Airport / Railway Station</option>
+                          <option value="Haridwar Railway Station">Haridwar Railway Station</option>
+                          <option value="Direct Hill Station Arrival">Direct Hill Station Arrival</option>
+                        </select>
+                      </div>
+
+                      {/* Dates */}
+                      <div className="grid grid-cols-2 gap-2.5">
+                        <div className="border border-neutral-200 rounded-2xl p-2.5 bg-neutral-50/70">
+                          <span className="block text-[10px] font-bold text-neutral-400 uppercase tracking-wider mb-1">Check In</span>
+                          <input 
+                            type="date" 
+                            value={checkInDate}
+                            onChange={(e) => setCheckInDate(e.target.value)}
+                            className="w-full text-xs font-bold text-neutral-800 bg-transparent focus:outline-none cursor-pointer"
+                          />
+                        </div>
+
+                        <div className="border border-neutral-200 rounded-2xl p-2.5 bg-neutral-50/70">
+                          <span className="block text-[10px] font-bold text-neutral-400 uppercase tracking-wider mb-1">Check Out</span>
+                          <input 
+                            type="date" 
+                            value={checkOutDate}
+                            onChange={(e) => setCheckOutDate(e.target.value)}
+                            className="w-full text-xs font-bold text-neutral-800 bg-transparent focus:outline-none cursor-pointer"
+                          />
+                        </div>
+                      </div>
+
+                      {/* Guests */}
+                      <div className="border border-neutral-200 rounded-2xl p-2.5 bg-neutral-50/70 flex items-center justify-between">
+                        <div>
+                          <span className="block text-[10px] font-bold text-neutral-400 uppercase tracking-wider">Guests</span>
+                          <span className="text-xs font-bold text-neutral-900">{guestCount} People</span>
+                        </div>
+                        <div className="flex items-center gap-2">
+                          <button
+                            type="button"
+                            onClick={() => setGuestCount(Math.max(1, guestCount - 1))}
+                            className="w-7 h-7 rounded-full bg-neutral-200 hover:bg-neutral-300 font-bold text-xs"
+                          >-</button>
+                          <span className="text-xs font-bold">{guestCount}</span>
+                          <button
+                            type="button"
+                            onClick={() => setGuestCount(Math.min(20, guestCount + 1))}
+                            className="w-7 h-7 rounded-full bg-neutral-200 hover:bg-neutral-300 font-bold text-xs"
+                          >+</button>
+                        </div>
+                      </div>
+
+                      {/* Big Reserve Button */}
+                      <button
+                        type="submit"
+                        className="w-full mt-2 py-3.5 rounded-full bg-neutral-950 hover:bg-black text-white font-bold text-sm tracking-wide shadow-xl hover:scale-[1.02] transition-all flex items-center justify-center gap-2"
+                      >
+                        <span>Reserve</span>
+                        <Icon name="arrow-up-right" className="w-4 h-4 text-amber-400" />
+                      </button>
+
+                    </form>
+                  </div>
+                </div>
+
+              </div>
+            </div>
+          </section>
+
+          {/* SIGNATURE TYPOGRAPHIC CUTOUT (Verbatim from Reference Image) */}
+          <section className="py-20 sm:py-28 bg-[#FBFBFA] border-y border-neutral-200/60 overflow-hidden">
+            <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
+              
+              <div className="text-3xl sm:text-5xl md:text-6xl lg:text-7xl font-light text-neutral-900 tracking-tight leading-[1.25] sm:leading-[1.35]">
+                <div className="flex flex-wrap items-center justify-center gap-y-2">
+                  <span>Take the step and explore</span>
+                  
+                  {/* Embedded Pill Image 1 */}
+                  <span className="inline-flex items-center align-middle mx-3 sm:mx-4 w-24 sm:w-36 md:w-44 h-10 sm:h-14 md:h-16 rounded-full overflow-hidden shadow-md border-2 border-white ring-1 ring-black/5 transform hover:scale-105 transition-transform duration-500 cursor-pointer">
+                    <img 
+                      src="https://images.unsplash.com/photo-1626621341517-bbf3d9990a23?auto=format&fit=crop&w=600&q=80" 
+                      alt="Himalayan Panorama" 
+                      className="w-full h-full object-cover"
+                    />
+                  </span>
+                  
+                  <span>the</span>
+                </div>
+
+                <div className="flex flex-wrap items-center justify-center gap-y-2 mt-2 sm:mt-3">
+                  <span>world</span>
+                  
+                  {/* Embedded Pill Image 2 */}
+                  <span className="inline-flex items-center align-middle mx-3 sm:mx-4 w-28 sm:w-40 md:w-48 h-10 sm:h-14 md:h-16 rounded-full overflow-hidden shadow-md border-2 border-white ring-1 ring-black/5 transform hover:scale-105 transition-transform duration-500 cursor-pointer">
+                    <img 
+                      src="https://images.unsplash.com/photo-1506744038136-46273834b3fb?auto=format&fit=crop&w=600&q=80" 
+                      alt="Alpine Emerald Lake" 
+                      className="w-full h-full object-cover"
+                    />
+                  </span>
+                  
+                  <span>waiting for you.</span>
+                </div>
+              </div>
+
+              <p className="mt-8 sm:mt-10 max-w-2xl mx-auto text-sm sm:text-base md:text-lg text-neutral-500 font-normal leading-relaxed">
+                Traveling change you. You see new places, meet new people, and become a new version of yourself.
+              </p>
+
+            </div>
+          </section>
+
+          {/* STATS & PHILOSOPHY (Matches Reference Mockup) */}
+          <section id="about" className="py-20 sm:py-28 bg-white">
+            <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+              <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 items-center">
+                
+                {/* Left Portrait Scenic Lake Card with Wooden Boat */}
+                <div className="lg:col-span-5 relative">
+                  <div className="relative rounded-3xl overflow-hidden shadow-2xl aspect-[3/4] max-w-md mx-auto">
+                    <img 
+                      src="https://images.unsplash.com/photo-1506744038136-46273834b3fb?auto=format&fit=crop&w=1000&q=80" 
+                      alt="Wooden boat on pristine lake" 
+                      className="w-full h-full object-cover"
+                    />
+                    <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-transparent to-transparent"></div>
+                    <div className="absolute bottom-6 left-6 right-6 p-4 rounded-2xl bg-white/95 backdrop-blur-md shadow-lg flex items-center justify-between">
+                      <div>
+                        <span className="block text-xs font-bold text-amber-700 uppercase tracking-wider">
+                          Handcrafted Mountain Journeys
+                        </span>
+                        <span className="text-sm font-bold text-neutral-900">
+                          Himachal & Uttarakhand Sanctuaries
+                        </span>
+                      </div>
+                      <div className="w-10 h-10 rounded-full bg-neutral-900 flex items-center justify-center text-white">
+                        <Icon name="compass" className="w-5 h-5 text-amber-400" />
+                      </div>
+                    </div>
+                  </div>
+                </div>
+
+                {/* Right Narrative & 3 Stats */}
+                <div className="lg:col-span-7 space-y-8">
+                  <div className="space-y-4">
+                    <span className="inline-block text-xs font-bold uppercase tracking-widest text-amber-700 bg-amber-50 px-3 py-1 rounded-full">
+                      Native Pahadi Hospitality
+                    </span>
+                    <h2 className="text-3xl sm:text-5xl font-bold tracking-tight text-neutral-900 leading-[1.15]">
+                      Traveling brings you closer to new places, people, and memories
+                    </h2>
+                    <p className="text-base sm:text-lg text-neutral-600 leading-relaxed max-w-2xl">
+                      Experience of unique travel is not just about the places visited, but also the stories, friendships, and peaceful perspective brought back home. We curate moments that stay with you forever.
+                    </p>
+                  </div>
+
+                  <div className="grid grid-cols-1 sm:grid-cols-3 gap-6 pt-4 border-t border-neutral-100">
+                    <div className="space-y-1">
+                      <div className="text-4xl sm:text-5xl font-bold text-neutral-950 tracking-tight">98%</div>
+                      <div className="text-sm font-bold text-neutral-800">Customer Satisfaction</div>
+                      <p className="text-xs text-neutral-400">Over 12,000+ happy Indian travelers</p>
+                    </div>
+
+                    <div className="space-y-1">
+                      <div className="text-4xl sm:text-5xl font-bold text-neutral-950 tracking-tight">85+</div>
+                      <div className="text-sm font-bold text-neutral-800">Popular Destinations</div>
+                      <p className="text-xs text-neutral-400">Across every valley of HP & UK</p>
+                    </div>
+
+                    <div className="space-y-1">
+                      <div className="text-4xl sm:text-5xl font-bold text-neutral-950 tracking-tight">240+</div>
+                      <div className="text-sm font-bold text-neutral-800">Experienced Local Guides</div>
+                      <p className="text-xs text-neutral-400">Native Pahadi mountain leaders</p>
+                    </div>
+                  </div>
+                </div>
+
+              </div>
+            </div>
+          </section>
+
+          {/* DESTINATION GRID ("Experience Our Destination" - Matches Reference Grid) */}
+          <section id="destinations" className="py-20 sm:py-28 bg-[#FBFBFA]">
+            <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+              
+              <div className="flex flex-col md:flex-row md:items-end justify-between mb-8 gap-6">
+                <div>
+                  <span className="text-xs font-bold uppercase tracking-widest text-amber-700 bg-amber-50 px-3 py-1 rounded-full">
+                    Curated Portfolios
+                  </span>
+                  <h2 className="text-3xl sm:text-5xl font-bold tracking-tight text-neutral-900 mt-2">
+                    Experience Our Destination
+                  </h2>
+                  <p className="text-sm sm:text-base text-neutral-500 max-w-xl mt-1">
+                    Handpicked tours across Himachal Pradesh and sacred Uttarakhand with private cabs and licensed mountain guides.
+                  </p>
+                </div>
+
+                {/* Search */}
+                <div className="w-full md:w-80">
+                  <input 
+                    type="text" 
+                    placeholder="Search Manali, Spiti, Kedarnath..."
+                    value={searchQuery}
+                    onChange={(e) => setSearchQuery(e.target.value)}
+                    className="w-full px-4 py-2.5 rounded-full bg-white border border-neutral-200 text-sm focus:outline-none focus:ring-2 focus:ring-neutral-900/10 shadow-sm"
+                  />
+                </div>
+              </div>
+
+              {/* State Filter Buttons */}
+              <div className="flex flex-wrap items-center gap-2 mb-6">
+                <button
+                  onClick={() => setFilterState('All')}
+                  className={`px-4 py-1.5 rounded-full text-xs font-bold transition-all ${
+                    filterState === 'All' ? 'bg-neutral-900 text-white' : 'bg-white text-neutral-700 border border-neutral-200'
+                  }`}
+                >
+                  All Destinations ({destinationsData.length})
+                </button>
+                <button
+                  onClick={() => setFilterState('Himachal Pradesh')}
+                  className={`px-4 py-1.5 rounded-full text-xs font-bold transition-all ${
+                    filterState === 'Himachal Pradesh' ? 'bg-amber-600 text-white' : 'bg-white text-neutral-700 border border-neutral-200'
+                  }`}
+                >
+                  🏔️ Himachal Pradesh (5)
+                </button>
+                <button
+                  onClick={() => setFilterState('Uttarakhand')}
+                  className={`px-4 py-1.5 rounded-full text-xs font-bold transition-all ${
+                    filterState === 'Uttarakhand' ? 'bg-emerald-700 text-white' : 'bg-white text-neutral-700 border border-neutral-200'
+                  }`}
+                >
+                  🕉️ Uttarakhand (5)
+                </button>
+              </div>
+
+              {/* Tour Cards Grid */}
+              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
+                {filteredList.map((dest) => {
+                  const isFav = favorites[dest.id];
+                  return (
+                    <div 
+                      key={dest.id}
+                      onClick={() => setActiveTourModal(dest)}
+                      className="group bg-white rounded-3xl overflow-hidden border border-neutral-200/80 shadow-sm hover:shadow-2xl transition-all duration-300 flex flex-col cursor-pointer transform hover:-translate-y-1.5"
+                    >
+                      <div className="relative aspect-[4/3] overflow-hidden bg-neutral-100">
+                        <img 
+                          src={dest.image} 
+                          alt={dest.title} 
+                          className="w-full h-full object-cover group-hover:scale-108 transition-transform duration-700"
+                        />
+                        <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent"></div>
+
+                        <div className="absolute top-3 left-3 flex flex-col gap-1 items-start">
+                          <span className={`text-[10px] font-bold px-2.5 py-1 rounded-full text-white ${
+                            dest.state === 'Himachal Pradesh' ? 'bg-amber-600/90' : 'bg-emerald-700/90'
+                          }`}>
+                            {dest.state === 'Himachal Pradesh' ? '🏔️ Himachal' : '🕉️ Uttarakhand'}
+                          </span>
+                        </div>
+
+                        <button
+                          onClick={(e) => {
+                            e.stopPropagation();
+                            setFavorites({ ...favorites, [dest.id]: !isFav });
+                          }}
+                          className="absolute top-3 right-3 w-8 h-8 rounded-full bg-white/80 hover:bg-white flex items-center justify-center text-neutral-700 shadow-sm"
+                        >
+                          <Icon name="heart" className={`w-4 h-4 ${isFav ? 'text-red-500 fill-red-500' : 'text-neutral-700'}`} />
+                        </button>
+
+                        <div className="absolute bottom-3 left-3 right-3 text-white text-[11px] font-semibold truncate flex items-center gap-1">
+                          <Icon name="map-pin" className="w-3 h-3 text-amber-400 flex-shrink-0" />
+                          <span>{dest.location}</span>
+                        </div>
+                      </div>
+
+                      <div className="p-5 flex-1 flex flex-col justify-between space-y-4">
+                        <div>
+                          <div className="flex items-center justify-between text-xs text-neutral-500 mb-1.5">
+                            <span>{dest.duration}</span>
+                            <span className="font-bold text-neutral-800 flex items-center gap-1">
+                              ★ {dest.rating} ({dest.reviewsCount})
+                            </span>
+                          </div>
+
+                          <h3 className="text-base font-bold text-neutral-900 group-hover:text-amber-700 transition-colors line-clamp-2">
+                            {dest.title}
+                          </h3>
+
+                          <p className="text-xs text-neutral-500 mt-2 line-clamp-2">
+                            {dest.overview}
+                          </p>
+                        </div>
+
+                        <div className="pt-3 border-t border-neutral-100 flex items-center justify-between">
+                          <div>
+                            <span className="text-[10px] uppercase font-bold text-neutral-400 block">From</span>
+                            <div className="text-lg font-extrabold text-neutral-950">
+                              ₹{dest.price.toLocaleString()} <span className="text-[11px] text-neutral-400 font-normal">/ person</span>
+                            </div>
+                          </div>
+
+                          <button 
+                            className="w-9 h-9 rounded-full bg-neutral-900 group-hover:bg-amber-600 text-white flex items-center justify-center transition-colors shadow-sm"
+                          >
+                            <Icon name="arrow-right" className="w-4 h-4" />
+                          </button>
+                        </div>
+                      </div>
+                    </div>
+                  );
+                })}
+              </div>
+
+            </div>
+          </section>
+
+          {/* 3 CORE PILLARS & TESTIMONIALS (Verbatim from Reference Image) */}
+          <section className="py-20 sm:py-28 bg-white border-t border-neutral-100">
+            <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+              
+              {/* 3 Pillars */}
+              <div className="grid grid-cols-1 md:grid-cols-3 gap-8 pb-20 border-b border-neutral-200">
+                <div className="space-y-3">
+                  <div className="w-12 h-12 rounded-2xl bg-neutral-100 flex items-center justify-center text-neutral-800">
+                    <Icon name="compass" className="w-6 h-6" />
+                  </div>
+                  <h3 className="text-xl font-bold text-neutral-900">Ease of travel</h3>
+                  <p className="text-sm text-neutral-500 leading-relaxed">
+                    A good travel experience is not just about the places visited; our verified hill drivers and luxury Volvo coaches make your journey comfortable.
+                  </p>
+                </div>
+
+                <div className="space-y-3">
+                  <div className="w-12 h-12 rounded-2xl bg-neutral-100 flex items-center justify-center text-neutral-800">
+                    <Icon name="users" className="w-6 h-6" />
+                  </div>
+                  <h3 className="text-xl font-bold text-neutral-900">Local Staff Help</h3>
+                  <p className="text-sm text-neutral-500 leading-relaxed">
+                    Professional native guides ensure you will not miss hidden paradise places, sacred shrines, and secluded valleys.
+                  </p>
+                </div>
+
+                <div className="space-y-3">
+                  <div className="w-12 h-12 rounded-2xl bg-neutral-100 flex items-center justify-center text-neutral-800">
+                    <Icon name="shield-check" className="w-6 h-6" />
+                  </div>
+                  <h3 className="text-xl font-bold text-neutral-900">Safe and reliable</h3>
+                  <p className="text-sm text-neutral-500 leading-relaxed">
+                    Experience and certified mountain drivers ensure your safety is guaranteed with 24/7 hill emergency and weather support.
+                  </p>
+                </div>
+              </div>
+
+              {/* Get a good travel experience (Verbatim Quote Section from Reference) */}
+              <div className="pt-20">
+                <div className="text-center max-w-2xl mx-auto mb-16 space-y-3">
+                  <span className="text-xs font-bold uppercase tracking-widest text-amber-700 bg-amber-50 px-3.5 py-1 rounded-full">
+                    Traveler Reflections
+                  </span>
+                  <h2 className="text-3xl sm:text-5xl font-bold tracking-tight text-neutral-900">
+                    Get a good travel experience
+                  </h2>
+                  <p className="text-sm sm:text-base text-neutral-500">
+                    A good travel experience is not just about the places visited, but also the stories and lessons brought back home.
+                  </p>
+                </div>
+
+                {/* Review Card */}
+                <div className="max-w-4xl mx-auto bg-[#FBFBFA] rounded-3xl p-8 sm:p-12 shadow-xl border border-neutral-200">
+                  <div className="flex items-center gap-1 text-amber-400 mb-4">
+                    {'★★★★★'}
+                  </div>
+                  <blockquote className="text-xl sm:text-2xl font-light text-neutral-800 italic leading-relaxed mb-6">
+                    "{reviewsData[reviewIndex].comment}"
+                  </blockquote>
+
+                  <div className="flex items-center justify-between pt-6 border-t border-neutral-200">
+                    <div className="flex items-center gap-3">
+                      <img 
+                        src={reviewsData[reviewIndex].avatar} 
+                        alt={reviewsData[reviewIndex].name} 
+                        className="w-12 h-12 rounded-full object-cover border-2 border-white shadow"
+                      />
+                      <div>
+                        <h4 className="font-bold text-neutral-900 text-sm">{reviewsData[reviewIndex].name}</h4>
+                        <p className="text-xs text-neutral-500">{reviewsData[reviewIndex].role} · {reviewsData[reviewIndex].date}</p>
+                      </div>
+                    </div>
+
+                    <div className="flex items-center gap-2">
+                      <button 
+                        onClick={() => setReviewIndex(prev => prev === 0 ? reviewsData.length - 1 : prev - 1)}
+                        className="w-9 h-9 rounded-full border border-neutral-300 hover:bg-neutral-900 hover:text-white flex items-center justify-center text-xs"
+                      >
+                        ←
+                      </button>
+                      <button 
+                        onClick={() => setReviewIndex(prev => prev === reviewsData.length - 1 ? 0 : prev + 1)}
+                        className="w-9 h-9 rounded-full border border-neutral-300 hover:bg-neutral-900 hover:text-white flex items-center justify-center text-xs"
+                      >
+                        →
+                      </button>
+                    </div>
+                  </div>
+                </div>
+
+              </div>
+
+            </div>
+          </section>
+
+          {/* CONTACT & CONSULTATION */}
+          <section id="contact" className="py-20 sm:py-28 bg-[#FBFBFA]">
+            <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+              
+              <div className="grid grid-cols-1 lg:grid-cols-12 gap-12">
+                <div className="lg:col-span-5 bg-neutral-950 text-white rounded-3xl p-8 space-y-6 shadow-xl">
+                  <div>
+                    <span className="text-xs uppercase tracking-wider text-amber-400 font-bold block mb-1">
+                      Himachal Pradesh Headquarters
+                    </span>
+                    <h3 className="text-2xl font-bold">{businessDetails.name}</h3>
+                    <p className="text-xs text-neutral-400 mt-1">{businessDetails.location}</p>
+                  </div>
+
+                  <div className="space-y-3 pt-2 text-xs sm:text-sm text-neutral-300">
+                    <p><span className="font-bold text-white">Toll-Free:</span> {businessDetails.tollFree}</p>
+                    <p><span className="font-bold text-white">Manali Desk:</span> {businessDetails.phone}</p>
+                    <p><span className="font-bold text-white">Email:</span> {businessDetails.email}</p>
+                    <p><span className="font-bold text-white">Branches:</span> Dehradun, Rishikesh, Shimla & New Delhi</p>
+                  </div>
+
+                  <a 
+                    href={`https://wa.me/${businessDetails.whatsappNumber}`}
+                    target="_blank"
+                    className="w-full py-3 rounded-2xl bg-emerald-600 hover:bg-emerald-700 text-white font-bold text-xs sm:text-sm flex items-center justify-center gap-2 shadow"
+                  >
+                    <span>Instant WhatsApp Inquiry: {businessDetails.whatsappDisplay}</span>
+                  </a>
+                </div>
+
+                <div className="lg:col-span-7 bg-white rounded-3xl p-8 border border-neutral-200 shadow-sm">
+                  <h3 className="text-2xl font-bold text-neutral-900 mb-2">Request Custom Himalayan Itinerary</h3>
+                  <p className="text-xs text-neutral-500 mb-6">Our local travel coordinator will reply on WhatsApp or phone within 15 minutes.</p>
+
+                  <form 
+                    onSubmit={async (e) => {
+                      e.preventDefault();
+                      const form = e.target;
+                      const name = form.travelerName.value;
+                      const phone = form.travelerPhone.value;
+                      const state = form.travelerState.value;
+                      const service = form.travelerService.value;
+                      const notes = form.travelerNotes.value;
+
+                      showToast("Namaste! Submitting your inquiry to Supabase...");
+                      await supabaseInsert('inquiries', {
+                        name: name,
+                        email: 'inquiry@tourexhimalayas.in',
+                        phone: phone,
+                        service: `${service} (${state})`,
+                        message: notes,
+                        status: 'pending'
+                      });
+
+                      showToast("Inquiry saved to Supabase! Our team will contact you on WhatsApp.");
+                      form.reset();
+                    }}
+                    className="space-y-4"
+                  >
+                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                      <input 
+                        type="text" 
+                        name="travelerName"
+                        required 
+                        placeholder="Your Name *"
+                        className="w-full px-4 py-3 rounded-2xl bg-neutral-50 border border-neutral-200 text-xs sm:text-sm focus:outline-none focus:border-neutral-900"
+                      />
+                      <input 
+                        type="tel" 
+                        name="travelerPhone"
+                        required 
+                        placeholder="WhatsApp Phone Number *"
+                        className="w-full px-4 py-3 rounded-2xl bg-neutral-50 border border-neutral-200 text-xs sm:text-sm focus:outline-none focus:border-neutral-900"
+                      />
+                    </div>
+
+                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                      <select name="travelerState" className="w-full px-4 py-3 rounded-2xl bg-neutral-50 border border-neutral-200 text-xs sm:text-sm">
+                        <option>Himachal Pradesh (Manali, Spiti, Kasol, Shimla)</option>
+                        <option>Uttarakhand (Kedarnath, Rishikesh, Nainital, Auli)</option>
+                        <option>Grand Himachal & Uttarakhand Circuit</option>
+                      </select>
+                      <select name="travelerService" className="w-full px-4 py-3 rounded-2xl bg-neutral-50 border border-neutral-200 text-xs sm:text-sm">
+                        <option>Family / Couple Leisure Tour</option>
+                        <option>Spiti 4x4 High-Altitude Road Trip</option>
+                        <option>Kedarnath & Badrinath Sacred Yatra</option>
+                        <option>Adventure Treks & Rafting</option>
+                      </select>
+                    </div>
+
+                    <textarea 
+                      name="travelerNotes"
+                      rows={3}
+                      placeholder="Travel dates, number of persons, pickup preferences..."
+                      className="w-full px-4 py-3 rounded-2xl bg-neutral-50 border border-neutral-200 text-xs sm:text-sm focus:outline-none focus:border-neutral-900"
+                    ></textarea>
+
+                    <button
+                      type="submit"
+                      className="px-8 py-3.5 rounded-full bg-neutral-950 text-white font-bold text-xs sm:text-sm hover:bg-black transition-all shadow-lg cursor-pointer"
+                    >
+                      Send Inquiry (Saves to Supabase)
+                    </button>
+                  </form>
+                </div>
+              </div>
+
+            </div>
+          </section>
+
+          {/* FOOTER */}
+          <footer className="bg-[#0E1318] text-white py-12 border-t border-white/10 text-xs text-neutral-400">
+            <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex flex-col sm:flex-row items-center justify-between gap-4">
+              <p>© 2026 {businessDetails.name} ({businessDetails.legalName}). Licensed & Registered in Himachal Pradesh.</p>
+              <div className="flex gap-4">
+                <span>Toll-Free: {businessDetails.tollFree}</span>
+                <span>•</span>
+                <span>Manali Desk: {businessDetails.phone}</span>
+              </div>
+            </div>
+          </footer>
+
+          {/* TOUR MODAL WITH BOOKING & VOUCHER GENERATOR */}
+          {activeTourModal && (
+            <div className="fixed inset-0 z-50 overflow-y-auto bg-black/85 backdrop-blur-md flex items-center justify-center p-3 sm:p-4">
+              <div className="relative bg-white w-full max-w-3xl rounded-3xl overflow-hidden shadow-2xl border border-neutral-200 my-6">
+                
+                <button
+                  onClick={() => setActiveTourModal(null)}
+                  className="absolute top-4 right-4 z-20 w-9 h-9 rounded-full bg-black/60 text-white flex items-center justify-center"
+                >
+                  ✕
+                </button>
+
+                <div className="relative h-56 w-full overflow-hidden">
+                  <img src={activeTourModal.image} alt={activeTourModal.title} className="w-full h-full object-cover" />
+                  <div className="absolute inset-0 bg-gradient-to-t from-black/90 via-black/30 to-transparent"></div>
+                  <div className="absolute bottom-4 left-4 right-4 text-white">
+                    <span className="text-[10px] font-bold px-2.5 py-0.5 rounded-full bg-amber-600 uppercase">
+                      {activeTourModal.state}
+                    </span>
+                    <h2 className="text-xl sm:text-2xl font-bold mt-1">{activeTourModal.title}</h2>
+                    <p className="text-xs text-white/80">{activeTourModal.duration} · ★ {activeTourModal.rating}</p>
+                  </div>
+                </div>
+
+                <div className="p-6 max-h-[60vh] overflow-y-auto space-y-5 text-xs sm:text-sm">
+                  
+                  {/* Highlights */}
+                  <div>
+                    <h4 className="font-bold text-neutral-900 uppercase text-xs tracking-wider mb-2">Package Highlights</h4>
+                    <ul className="grid grid-cols-1 sm:grid-cols-2 gap-2 text-neutral-700">
+                      {activeTourModal.highlights.map((h, i) => (
+                        <li key={i} className="flex items-start gap-1.5">
+                          <span className="text-emerald-600 font-bold">✓</span>
+                          <span>{h}</span>
+                        </li>
+                      ))}
+                    </ul>
+                  </div>
+
+                  {/* Day-by-day Itinerary */}
+                  <div className="border-t border-neutral-200 pt-4">
+                    <h4 className="font-bold text-neutral-900 uppercase text-xs tracking-wider mb-3">Day-by-Day Journey</h4>
+                    <div className="space-y-2.5">
+                      {activeTourModal.itinerary.map((day, idx) => (
+                        <div key={idx} className="p-3 bg-neutral-50 rounded-xl border border-neutral-200">
+                          <span className="font-bold text-amber-700 text-xs">{day.day}: {day.title}</span>
+                          <p className="text-xs text-neutral-600 mt-0.5">{day.desc}</p>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+
+                  {/* Inclusions */}
+                  <div className="border-t border-neutral-200 pt-4">
+                    <h4 className="font-bold text-neutral-900 uppercase text-xs tracking-wider mb-2">Inclusions</h4>
+                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
+                      {activeTourModal.included.map((inc, i) => (
+                        <div key={i} className="p-2 rounded-lg bg-emerald-50 text-emerald-900 text-xs font-medium">
+                          ✓ {inc}
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+
+                  {/* Booking CTA Bar */}
+                  <div className="border-t border-neutral-200 pt-4 flex flex-col sm:flex-row items-center justify-between gap-4">
+                    <div>
+                      <span className="text-[10px] uppercase font-bold text-neutral-400 block">Package Price</span>
+                      <span className="text-2xl font-extrabold text-neutral-950 font-display">
+                        ₹{activeTourModal.price.toLocaleString()} <span className="text-xs text-neutral-500 font-normal">/ person</span>
+                      </span>
+                    </div>
+
+                    <a
+                      href={`https://wa.me/${businessDetails.whatsappNumber}?text=Namaste!%20I%20want%20to%20reserve%20the%20"${encodeURIComponent(activeTourModal.title)}"%20for%20my%20upcoming%20travel.`}
+                      target="_blank"
+                      onClick={() => {
+                        supabaseInsert('bookings', {
+                          tour_title: activeTourModal.title,
+                          location: activeTourModal.location,
+                          client_name: 'WhatsApp Traveler',
+                          email: 'guest@tourexhimalayas.in',
+                          total_price: '₹' + activeTourModal.price.toLocaleString(),
+                          notes: 'Triggered via WhatsApp Reservation Button',
+                          status: 'requested'
+                        });
+                        showToast("Booking recorded in Supabase! Redirecting to WhatsApp...");
+                      }}
+                      className="w-full sm:w-auto px-6 py-3 rounded-full bg-emerald-600 hover:bg-emerald-700 text-white font-bold text-xs sm:text-sm text-center shadow-lg cursor-pointer"
+                    >
+                      Book Tour on WhatsApp
+                    </a>
+                  </div>
+
+                </div>
+
+              </div>
+            </div>
+          )}
+
+          {/* SIGN IN / TRACK MODAL */}
+          {signInOpen && (
+            <div className="fixed inset-0 z-50 overflow-y-auto bg-black/85 backdrop-blur-sm flex items-center justify-center p-4">
+              <div className="relative bg-white w-full max-w-md rounded-3xl p-6 sm:p-8 space-y-5">
+                <button
+                  onClick={() => setSignInOpen(false)}
+                  className="absolute top-4 right-4 w-8 h-8 rounded-full bg-neutral-100 flex items-center justify-center text-xs"
+                >
+                  ✕
+                </button>
+
+                <div className="text-center">
+                  <h3 className="text-2xl font-bold text-neutral-900">Sign In / Track Booking</h3>
+                  <p className="text-xs text-neutral-500 mt-1">Check your reserved hill vehicle & hotel voucher status.</p>
+                </div>
+
+                <form 
+                  onSubmit={(e) => {
+                    e.preventDefault();
+                    showToast("Signed in successfully!");
+                    setSignInOpen(false);
+                  }}
+                  className="space-y-3"
+                >
+                  <div>
+                    <label className="block text-xs font-bold text-neutral-700 mb-1">Booking Reference or Phone (+91)</label>
+                    <input 
+                      type="text" 
+                      required 
+                      placeholder="e.g. HEX-HP-8942 or +91 77659..."
+                      className="w-full px-4 py-2.5 rounded-2xl bg-neutral-50 border border-neutral-200 text-xs sm:text-sm"
+                    />
+                  </div>
+
+                  <div>
+                    <label className="block text-xs font-bold text-neutral-700 mb-1">Password / OTP</label>
+                    <input 
+                      type="password" 
+                      required 
+                      placeholder="••••••••"
+                      className="w-full px-4 py-2.5 rounded-2xl bg-neutral-50 border border-neutral-200 text-xs sm:text-sm"
+                    />
+                  </div>
+
+                  <button
+                    type="submit"
+                    className="w-full py-3 rounded-full bg-neutral-950 text-white font-bold text-xs sm:text-sm"
+                  >
+                    Track Status / Sign In
+                  </button>
+                </form>
+
+                <p className="text-center text-xs text-neutral-400">
+                  Toll-Free Assistance: <span className="font-bold text-neutral-800">{businessDetails.tollFree}</span>
+                </p>
+              </div>
+            </div>
+          )}
+
+          {/* FLOATING WHATSAPP BUTTON */}
+          <a
+            href={`https://wa.me/${businessDetails.whatsappNumber}?text=Namaste%20Tourex%20Himalayas!%20I%20am%20looking%20for%20a%20tour%20package.`}
+            target="_blank"
+            className="fixed bottom-6 right-6 z-40 w-14 h-14 rounded-full bg-emerald-600 hover:bg-emerald-500 text-white flex items-center justify-center shadow-2xl transition-transform hover:scale-110"
+            title="Chat with Pahadi Concierge on WhatsApp"
+          >
+            <Icon name="message-circle" className="w-7 h-7" />
+          </a>
+
+        </div>
+      );
+    }
+
+    ReactDOM.createRoot(document.getElementById('root')).render(<App />);
+  </script>
+</body>
+</html>
